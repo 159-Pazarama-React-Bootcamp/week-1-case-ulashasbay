@@ -5,7 +5,7 @@ const isCreditCardNumberValid = (cardNumber, expDate='12/99') => {
     const checkList = [
         checkLastNum(cardNumber),
         checkNumForm(cardNumber),
-        checkDifNums(getNums),
+        checkDiffNums(getNums),
         checkSumOfNums(getNums),
         checkLuhn(getNums),
         checkExpDate(expDate),
@@ -67,7 +67,7 @@ const isCreditCardNumberValid = (cardNumber, expDate='12/99') => {
     }
 
     // Farklı sayı kontrolü
-    function checkDifNums(cardNums) {  
+    function checkDiffNums(cardNums) {  
         for(let i=0; i<cardNums.length - 1; i++) {
             if(cardNums[i] != cardNums[i+1]){
                 return true;
@@ -125,3 +125,65 @@ const isCreditCardNumberValid = (cardNumber, expDate='12/99') => {
 // console.log(isCreditCardNumberValid('22a2-c2222b22-2224'))
 // console.log(isCreditCardNumberValid('2222----2222----2222----2224'))
 // console.log(isCreditCardNumberValid('5555555555554444'))
+
+
+
+
+
+//  ------- Html sayfası ile ilgili işlemler--------
+
+// Üzerinde işlem yapılacak html elementlerinin seçilmesi
+let cardNumberDom = document.querySelector('#card-numbers');
+let monthSelectDom = document.querySelector('#months')
+let yearSelectDom = document.querySelector('#years')
+let validationDom = document.querySelector('#validation')
+let button = document.querySelector('#btn')
+let formDom = document.querySelector('#card-number-form')
+
+// ayların dropdown şeklinde eklenmesi
+function addMonthDropdown(month){
+    let monthOpt = document.createElement('option');
+    monthOpt.innerHTML = month;
+    monthOpt.value = month;
+    monthSelectDom.appendChild(monthOpt);
+}
+
+for (let i=1; i<=12; i++) {
+    let month = '';
+    if (i < 10) {
+        month = '0' + i;
+    } else {
+        month = i.toString();
+    }
+    addMonthDropdown(month);
+}
+
+// yılların dropdown şeklinde eklenmesi
+function addYearDropdown(year){
+    let yearOpt = document.createElement('option');
+    yearOpt.innerHTML = year;
+    yearOpt.value = year.slice(2);
+    yearSelectDom.appendChild(yearOpt);
+}
+
+for (let i=2000; i<=2099;i++){
+    let year = i.toString();
+    addYearDropdown(year);
+}
+
+// input alanına girilen kart numarasının geçerli olup olmadığının kontrolü ve sonucun yazılması
+function isValid(event){
+    event.preventDefault();
+    let expDate = `${monthSelectDom.value}-${yearSelectDom.value}`
+    let cardNumber = cardNumberDom.value;
+    if (isCreditCardNumberValid(cardNumber, expDate)) {
+        validationDom.setAttribute('style', 'color: #228B22');
+        validationDom.textContent = 'Valid Credit Card Number';
+           
+    } else {
+        validationDom.setAttribute('style', 'color: #FF4136');
+        validationDom.textContent = "Invalid Credit Card Number";    
+    }
+}
+
+formDom.addEventListener('submit', isValid);
